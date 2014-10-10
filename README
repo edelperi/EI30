@@ -5,6 +5,7 @@
  José Eugenio López Periago
  Universidade de Vigo
  Faculty of Sciences 32004 Spain
+ vie oct 10 19:51:55 CEST 2014
  ================================================
 
 
@@ -13,22 +14,15 @@
  precipitation. Rains less than 1.3 mm, and separated
  from other storms by 6 or more hours, are moitted
  as insignificant unless the maximum 15 min intensity
- exceeds 24 mm h-1 (Wischmeier and Smith, 1978)
+ exceeds 24 mm h^-1 (Wischmeier and Smith, 1978)
 
- Note:
- (*)AWK is an interpreted programming language designed for text processing
- and typically used as a data extraction and reporting tool. It is a
- standard feature of most Unix-like operating systems.
- More info at:
- http://en.wikipedia.org/wiki/AWK 
- http://es.wikipedia.org/wiki/AWK  (spanish)
 
-#=================================================================
-# The rainfall energy  is calculated for each time interval as:
-# where rain_intensity is the rainfall intensity during 
-# the time interval (mm hr -1) (Brown and Foster, 1987)
-# returns the energy  in  E(MJ/ha)
-#
+ The rainfall energy  is calculated for each time interval as:
+ where rain_intensity is the rainfall intensity during 
+ the time interval (mm hr -1) (Brown and Foster, 1987)
+ returns the energy  in  E(MJ/ha)
+
+#-----------------------------------------------------------------
 function energy(rain_intensity)
         {
         res = 0.29 * (1 - 0.72 * exp(-0.05 * rain_intensity))
@@ -36,16 +30,26 @@ function energy(rain_intensity)
         }
 #-----------------------------------------------------------------
 
-# References:
-#
-#
-# Brown, L.C. and Foster, G.R. 1987. Storm erosivity using idealized
-# intensity distributions. Transaction of the ASAE 30:379-386.
-#
-# Wischmeier, W.H. and D.D. Smith. 1978. Predicting rainfall-
-# erosion losses - A guide to conservation farming. U.S. Dept.
-# of Agric., Agr. Handbook No. 537.
-#-----------------------------------------------------------------
 
+
+
+Note:
+
+ (*)AWK is an interpreted programming language designed for text processing
+ and typically used as a data extraction and reporting tool. It is a
+ standard feature of most Unix-like operating systems.
+ More info at:
+ http://en.wikipedia.org/wiki/AWK 
+ http://es.wikipedia.org/wiki/AWK  (spanish)
+
+References:
+
+
+ Brown, L.C. and Foster, G.R. 1987. Storm erosivity using idealized
+ intensity distributions. Transaction of the ASAE 30:379-386.
+
+ Wischmeier, W.H. and D.D. Smith. 1978. Predicting rainfall-
+ erosion losses - A guide to conservation farming. U.S. Dept.
+ of Agric., Agr. Handbook No. 537.
 
 
