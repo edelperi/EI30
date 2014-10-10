@@ -23,3 +23,29 @@
  http://en.wikipedia.org/wiki/AWK 
  http://es.wikipedia.org/wiki/AWK  (spanish)
 
+#=================================================================
+# The rainfall energy  is calculated for each time interval as:
+# where rain_intensity is the rainfall intensity during 
+# the time interval (mm hr -1) (Brown and Foster, 1987)
+# returns the energy  in  E(MJ/ha)
+#
+function energy(rain_intensity)
+        {
+        res = 0.29 * (1 - 0.72 * exp(-0.05 * rain_intensity))
+        return(res)
+        }
+#-----------------------------------------------------------------
+
+# References:
+#
+#
+# Brown, L.C. and Foster, G.R. 1987. Storm erosivity using idealized
+# intensity distributions. Transaction of the ASAE 30:379-386.
+#
+# Wischmeier, W.H. and D.D. Smith. 1978. Predicting rainfall-
+# erosion losses - A guide to conservation farming. U.S. Dept.
+# of Agric., Agr. Handbook No. 537.
+#-----------------------------------------------------------------
+
+
+
