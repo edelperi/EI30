@@ -10,10 +10,10 @@
 
  EI calculations, a break between storms is
  defined as 6 h or more with less than 1.3 mm of
- precipitation. Rains less than 13 mm, and separated
+ precipitation. Rains less than 1.3 mm, and separated
  from other storms by 6 or more hours, are moitted
  as insignificant unless the maximum 15 min intensity
- exceeds 24 mm h -1 (Wischmeier and Smith, 1978)
+ exceeds 24 mm h-1 (Wischmeier and Smith, 1978)
 
  Note:
  (*)AWK is an interpreted programming language designed for text processing
