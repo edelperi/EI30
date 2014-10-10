@@ -1,12 +1,19 @@
- This is a awk(*) script that calculates and displays the EI30 erosivity
- index from rainfall gauge records.
-
+ EI30.awk
+ 
  ================================================
  José Eugenio López Periago
  Universidade de Vigo
  Faculty of Sciences 32004 Spain
  vie oct 10 19:51:55 CEST 2014
  ================================================
+ 
+ usage: "awk -f EI30.awk < EI30.dat" (do not run)
+ 
+ EI30.dat is a dummy rainfall data file for testing
+
+ This is a awk(*) script that calculates and displays the EI30 erosivity
+ index from rainfall gauge records.
+
 
 
  EI calculations, a break between storms is
@@ -41,6 +48,9 @@ Note:
  More info at:
  http://en.wikipedia.org/wiki/AWK 
  http://es.wikipedia.org/wiki/AWK  (spanish)
+
+ A version for windows of awk can be found at:
+ http://gnuwin32.sourceforge.net/packages/gawk.htm
 
 References:
 
