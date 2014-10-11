@@ -7,14 +7,13 @@
  vie oct 10 19:51:55 CEST 2014
  ================================================
  
- usage: "awk -f EI30.awk < EI30.dat" (do not run)
+ usage: "awk -f EI30.awk < EI30.dat" 
  
- EI30.dat is a dummy rainfall data file for testing
+ where: EI30.dat is a dummy rainfall data file that
+ can be used for testing
 
  This is a awk(*) script that calculates and displays the EI30 erosivity
  index from rainfall gauge records.
-
-
 
  EI calculations, a break between storms is
  defined as 6 h or more with less than 1.3 mm of
