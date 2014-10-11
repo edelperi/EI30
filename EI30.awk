@@ -3,6 +3,8 @@
 #
 # This is a awk(*) script that calculates and displays the EI30 erosivity
 # index from rainfall gauge records.
+# The current version is valid for records with a sampling interval of
+#  5 min
 #
 # ================================================
 # José Eugenio López Periago
@@ -41,10 +43,13 @@ END{
 
 # Command line assignation of time interval 
 # interval = ARGV[1];
+interval = 5;
 
-printf "Calculation of EI erosivity indexes from tipping buckett rainfal records\n"
-printf "Using a time lag of %d min\n",interval
-printf "\n\nDate\tTime\tEvent_#\tEI5\tEI10\tEI15\tEI30\n"
+printf "#==========================================================================\n"
+printf "# Calculation of EI erosivity indexes from tipping buckett rainfall records\n"
+printf "# Using a time lag of %d min\n",interval
+printf "===========================================================================\n"
+printf "Date\tTime\tEvent_#\tEI5\tEI10\tEI15\tEI30\n"
 
 nepisode=0;
 
