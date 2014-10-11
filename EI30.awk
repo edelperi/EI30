@@ -8,6 +8,7 @@
 # José Eugenio López Periago
 # Universidade de Vigo
 # Faculty of Sciences 32004 Spain
+# sáb oct 11 18:26:43 CEST 2014
 # ================================================
 #
 #
@@ -37,19 +38,21 @@ rain[NR]=$3
 
 END{
 
-interval = ARGV[1];
 
-printf "Calculation of EI arosivity indexes from tipping buckett rainfal records\n"
+# Command line assignation of time interval 
+# interval = ARGV[1];
+
+printf "Calculation of EI erosivity indexes from tipping buckett rainfal records\n"
 printf "Using a time lag of %d min\n",interval
 printf "\n\nDate\tTime\tEvent_#\tEI5\tEI10\tEI15\tEI30\n"
 
-nevent=0;
+nepisode=0;
 
 for (I=2;I<=NR;I++)
 	{
 	sprec =0;
 #===================================================
-#               Check for a rainfall event
+#               Check for a rainfall episode
 #===================================================
 # EI calculations, a break between storms is
 # defined as 6 h or more with less than 1.3 mm of
@@ -64,13 +67,13 @@ for (I=2;I<=NR;I++)
 
 	if (sprec <= 1.3) # Wischmeier and Smith threshold, 1978
 		{	
-		event[I]= 0.0;
+		episode[I]= 0.0;
 		}
 		else
 		{
-		#Evento detectado
-		event[I]= 1;
-                     #Calcula I30
+		#if episode detecthed then:
+		episode[I]= 1;
+                     #Calculate I30
 		     for(K=0;K<=5;K++)
 			{
 			I30[I]= (I30[I] + rain[I+K]);
@@ -89,27 +92,27 @@ for (I=2;I<=NR;I++)
                         I5[I]=rain[I]; 
 # Uncomment the line below for testing:
 # print I,I5[I]*12,I10[I]*6,I15[I]*4,I30[I]*2
-		if(event[I] > event[I-1] && event[I] > 0)
+		if(episode[I] > episode[I-1] && episode[I] > 0)
 			{
-			nevent= nevent + 1;
+			nepisode= nepisode + 1;
 			}
-         snevent[I]=nevent;
+         snepisode[I]=nepisode;
 		}
 
 
 
-if(event[I] > 0)
+if(episode[I] > 0)
 
 {
 # Uncomment the line below for testing:
-# print I,prec[I],event[I],snevent[I],I5[I]*12,I10[I]*6,I15[I]*3,I30[I]*2,MaxI30*2
+# print I,prec[I],episode[I],snepisode[I],I5[I]*12,I10[I]*6,I15[I]*3,I30[I]*2,MaxI30*2
 
 
 if(rain[I] > 0)
 {
 
-Pevent[snevent[I]] = Pevent[snevent[I]] + rain[I];
-time[snevent[I]]++;
+Pepisode[snepisode[I]] = Pepisode[snepisode[I]] + rain[I];
+time[snepisode[I]]++;
 }
 
 	tmp5 =   I5[I-1];
@@ -124,49 +127,49 @@ time[snevent[I]]++;
 	if(tmp30 < I30[I]) { tmp30 =I30[I]; }
  
 
-#	vI5[snevent[I]]=tmp5*12
-#	vI10[snevent[I]]=tmp10*6
-#	vI15[snevent[I]]=tmp15*3
-#       vI30[snevent[I]]=tmp30*2
+#	vI5[snepisode[I]]=tmp5*12
+#	vI10[snepisode[I]]=tmp10*6
+#	vI15[snepisode[I]]=tmp15*3
+#       vI30[snepisode[I]]=tmp30*2
 
 
 # Calculates the maximum rainfall intensity for different periods
-# and expresses in (mm/h) in the event.
+# and expresses in (mm/h) in the episode.
 #e.g., for  (maxI30) in 30 min
 	if(maxI30 < tmp30) { maxI30=tmp30; }
 	if(maxI15 < tmp15) { maxI15=tmp15; }
 	if(maxI10 < tmp10) { maxI10=tmp10; }
 	if(maxI5 < tmp5)   { maxI5=  tmp5; }
 
-	#Store the maximum intensiities in a index variable
-	vI30[snevent[I]]=maxI30*2;
-	vI15[snevent[I]]=maxI15*3;
-	vI10[snevent[I]]=maxI10*6;
-	vI5[snevent[I]]=maxI5*12;
+	#Store the maximum intensiities in variables indexed by episodes
+	vI30[snepisode[I]]=maxI30*2;
+	vI15[snepisode[I]]=maxI15*3;
+	vI10[snepisode[I]]=maxI10*6;
+	vI5[snepisode[I]]=maxI5*12;
 
 #Calculates the rainfall energy in the episode (RE) by using the Brown and Foster equation (1987).
 
-	RE[snevent[I]]=energy(Pevent[snevent[I]]/time[snevent[I]]*12.0)* Pevent[snevent[I]];
+	RE[snepisode[I]]=energy(Pepisode[snepisode[I]]/time[snepisode[I]]*12.0)* Pepisode[snepisode[I]];
 
-	EI30[snevent[I]]=RE[snevent[I]]*vI30[snevent[I]];
-	EI15[snevent[I]]=RE[snevent[I]]*vI15[snevent[I]];
-	EI10[snevent[I]]=RE[snevent[I]]*vI10[snevent[I]];
-	 EI5[snevent[I]]=RE[snevent[I]]* vI5[snevent[I]];
-
-# Uncomment the line below for testing:
-#print rain[I],snevent[I],vI5[snevent[I]], vI10[snevent[I]], vI15[snevent[I]], vI30[snevent[I]],RE[snevent[I]],EI30[snvent[I]] 
-
-
-#Stores the date and time in an array indexed by events
-	datevent[snevent[I]] = date[I];
-	timevent[snevent[I]] = time[I];
+	EI30[snepisode[I]]=RE[snepisode[I]]*vI30[snepisode[I]];
+	EI15[snepisode[I]]=RE[snepisode[I]]*vI15[snepisode[I]];
+	EI10[snepisode[I]]=RE[snepisode[I]]*vI10[snepisode[I]];
+	 EI5[snepisode[I]]=RE[snepisode[I]]* vI5[snepisode[I]];
 
 # Uncomment the line below for testing:
-#print date[I],time[I],rain[I],snevent[I],Pevent[snevent[I]],vI30[snevent[I]],RE[snevent[I]],EI30[snevent[I]]; 
+#print rain[I],snepisode[I],vI5[snepisode[I]], vI10[snepisode[I]], vI15[snepisode[I]], vI30[snepisode[I]],RE[snepisode[I]],EI30[snvent[I]] 
 
 
-# Save the maximum number of events
-	maxevent=snevent[I];
+#Stores the date and time in an array indexed by episodes
+	datepisode[snepisode[I]] = date[I];
+	timepisode[snepisode[I]] = time[I];
+
+# Uncomment the line below for testing:
+#print date[I],time[I],rain[I],snepisode[I],Pepisode[snepisode[I]],vI30[snepisode[I]],RE[snepisode[I]],EI30[snepisode[I]]; 
+
+
+# Save the maximum number of episodes
+	maxepisode=snepisode[I];
 	}
 
 # Uncomment the line below for testing:
@@ -175,14 +178,14 @@ time[snevent[I]]++;
 
 #=================================================================
 # Write output:
-# date, time, event no., EI30 (MJ/ha mm/h)
+# date, time, episode no., EI30 (MJ/ha mm/h)
 #=================================================================
 
-for(Ievent=1;Ievent<=maxevent;Ievent++)
+for(Istorm=1;Istorm<=maxepisode;Istorm++)
 {
 # Uncomment the line below for testing:
-# print Ievent,datevent[Ievent],timevent[Ievent],EI30[Ievent]
-printf "%s\t%s\t%3d\t%4.1f\t%4.1f\t%4.1f\t%4.1f\n",datevent[Ievent],timevent[Ievent],Ievent,EI5[Ievent],EI10[Ievent],EI15[Ievent],EI30[Ievent]
+# print Istorm,datepisode[Istorm],timepisode[Istorm],EI30[Istorm]
+printf "%s\t%s\t%3d\t%4.1f\t%4.1f\t%4.1f\t%4.1f\n",datepisode[Istorm],timepisode[Istorm],Istorm,EI5[Istorm],EI10[Istorm],EI15[Istorm],EI30[Istorm]
 
 }
 
@@ -195,7 +198,7 @@ printf "%s\t%s\t%3d\t%4.1f\t%4.1f\t%4.1f\t%4.1f\n",datevent[Ievent],timevent[Iev
 #The rainfall energy  is calculated for each time interval as:
 #where rain_intensity is the rainfall intensity during 
 # the time interval (mm hr -1).
-# Formula de Brown y Foster (Mannaerts, 1999)
+# Formula de Brown y Foster 1987
 # returns the energy  in  E(MJ/ha)
 function energy(rain_intensity)
 	{
@@ -214,7 +217,3 @@ function energy(rain_intensity)
 # erosion losses - A guide to conservation farming. U.S. Dept.
 # of Agric., Agr. Handbook No. 537.
 #-----------------------------------------------------------------
-
-
-
-
