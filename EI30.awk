@@ -49,7 +49,7 @@ printf "#=======================================================================
 printf "# Calculation of EI erosivity indexes from tipping buckett rainfall records\n"
 printf "# Using a time lag of %d min\n",interval
 printf "===========================================================================\n"
-printf "Date\tTime\tEvent_#\tEI5\tEI10\tEI15\tEI30\n"
+printf "Date\tTime\tEvent_#\tI5\tI10\tI15\tI30\tEnergy\tEI5\tEI10\tEI15\tEI30\n"
 
 nepisode=0;
 
@@ -190,7 +190,7 @@ for(Istorm=1;Istorm<=maxepisode;Istorm++)
 {
 # Uncomment the line below for testing:
 # print Istorm,datepisode[Istorm],timepisode[Istorm],EI30[Istorm]
-printf "%s\t%s\t%3d\t%4.1f\t%4.1f\t%4.1f\t%4.1f\n",datepisode[Istorm],timepisode[Istorm],Istorm,EI5[Istorm],EI10[Istorm],EI15[Istorm],EI30[Istorm]
+printf "%s\t%s\t%3d\t%4.1f\t%4.1f\t%4.1f\t%4.1f\t%4.3f\t%4.1f\t%4.1f\t%4.1f\t%4.1f\n",datepisode[Istorm],timepisode[Istorm],Istorm,vI5[Istorm],vI10[Istorm],vI15[Istorm],vI30[Istorm],RE[Istorm],EI5[Istorm],EI10[Istorm],EI15[Istorm],EI30[Istorm]
 
 }
 
