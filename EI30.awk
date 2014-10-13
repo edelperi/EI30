@@ -50,11 +50,13 @@ t10 = 30/interval;
 t15 = 15/interval;
 t30 = 10/interval;
 
+tdry = int(60/interval*6);
+
 printf "#==========================================================================\n"
 printf "# Calculation of EI erosivity indexes from tipping buckett rainfall records\n"
 printf "# Using a time lag of %d min\n",interval
 printf "===========================================================================\n"
-printf "Date\tTime\tEvent_#\tI5\tI10\tI15\tI30\tEnergy\tEI5\tEI10\tEI15\tEI30\n"
+printf "Date\tTime\t\tEvt_no.\tP(mm)\tTime(h)\tRain(h)\tI5\tI10\tI15\tI30\tEnergy\tEI5\tEI10\tEI15\tEI30\n"
 
 nepisode=0;
 
@@ -70,65 +72,64 @@ for (I=2;I<=NR;I++)
 # from other storms by 6 or more hours, are moitted
 # as insignificant unless the maximum 15 min intensity
 # exceeds 24 mm h -1 (Wischmeier and Smith, 1978)
-	for(K=0;K<=72;K++)
+	for(K=0;K<=tdry;K++)
 		{
 		sprec= sprec + rain[I+K]
 		}
 
 	if (sprec <= 1.3) # Threshold for erosive rain > 1.3 mm (Wischmeier and Smith, 1978)
 		{	
-		episode[I]= 0.0;
+		episode[I]= 0;
 		}
 		else
 		{
-		#if episode detecthed then:
+		#if episode detected then:
 		episode[I]= 1;
                      #Calculate I30
-		     for(K=0;K<=5;K++)
+		     for(K=0;K<=int(30/interval-1);K++)
 			{
 			I30[I]= (I30[I] + rain[I+K]);
 			}
                      #I15
-		     for(K=0;K<=3;K++)
+		     for(K=0;K<=int(15/interval-1);K++)
 			{
 			 I15[I]= (I15[I]+rain[I+K]);
 			}
                      #I10
-		     for(K=0;K<=1;K++)
+		     for(K=0;K<=int(10/interval-1);K++)
 			{
 			 I10[I]= (I10[I]+rain[I+K]);
 			}
                      #I5
                         I5[I]=rain[I]; 
 # Uncomment the line below for testing:
-# print I,I5[I]*12,I10[I]*6,I15[I]*4,I30[I]*2
-		if(episode[I] > episode[I-1] && episode[I] > 0)
+# print date[I],time[I],I,nepisode,I30[I]
+
+# Set the array index in the previuos record
+M =  I-1;
+		if(episode[I] > episode[M] && episode[M] < 1)
 			{
-			nepisode= nepisode + 1;
+			nepisode++;
 			}
-         snepisode[I]=nepisode;
-		}
+
+
+# Save the   number of the episode
+         sumep[I]=nepisode;
+# Save the  time indexes in the episodes
+         timeindex[sumep[I]]=I;
+
+
+#print sumep[I],timeindex[sumep[I]]
 
 
 
-if(episode[I] > 0)
-
-{
 # Uncomment the line below for testing:
-# print I,prec[I],episode[I],snepisode[I],I5[I]*12,I10[I]*6,I15[I]*3,I30[I]*2,MaxI30*2
+# print date[I],time[I],I,prec[I],episode[I],sumep[I],I30[I],Pepisode[sumep[I]]
 
-
-if(rain[I] > 0)
-{
-
-Pepisode[snepisode[I]] = Pepisode[snepisode[I]] + rain[I];
-time[snepisode[I]]++;
-}
-
-	tmp5 =   I5[I-1];
-	tmp10 = I10[I-1];
-	tmp15 = I15[I-1];
-	tmp30 = I30[I-1];
+	tmp5 =   I5[M];
+	tmp10 = I10[M];
+	tmp15 = I15[M];
+	tmp30 = I30[M];
 
 
 	if(tmp5 < I5[I]) { tmp5 =I5[I]; }
@@ -137,13 +138,7 @@ time[snepisode[I]]++;
 	if(tmp30 < I30[I]) { tmp30 =I30[I]; }
  
 
-#	vI5[snepisode[I]]=tmp5*12
-#	vI10[snepisode[I]]=tmp10*6
-#	vI15[snepisode[I]]=tmp15*3
-#       vI30[snepisode[I]]=tmp30*2
-
-
-# Calculates the maximum rainfall intensity for different periods
+# Compute the maximum rainfall intensity for different periods
 # and expresses in (mm/h) in the episode.
 #e.g., for  (maxI30) in 30 min
 	if(maxI30 < tmp30) { maxI30=tmp30; }
@@ -151,41 +146,67 @@ time[snepisode[I]]++;
 	if(maxI10 < tmp10) { maxI10=tmp10; }
 	if(maxI5 < tmp5)   { maxI5=  tmp5; }
 
-	#Store the maximum intensiities in variables indexed by episodes
-	vI30[snepisode[I]]=maxI30*t30;
-	vI15[snepisode[I]]=maxI15*t15;
-	vI10[snepisode[I]]=maxI10*t10;
-	vI5[snepisode[I]]=maxI5*t5;
+	#Store the maximum intensities in variables indexed by episodes
+	vI30[sumep[I]]=maxI30*t30;
+	vI15[sumep[I]]=maxI15*t15;
+	vI10[sumep[I]]=maxI10*t10;
+	vI5[sumep[I]]=maxI5*t5;
 
 #Calculates the rainfall energy in the episode (RE) by using the Brown and Foster equation (1987).
 
-	RE[snepisode[I]]=energy(Pepisode[snepisode[I]]/time[snepisode[I]]*(60.0/interval))* Pepisode[snepisode[I]];
+#	RE[sumep[I]]=energy(Pepisode[sumep[I]]/time[sumep[I]]*(60.0/interval))* Pepisode[sumep[I]];
+#	RE[sumep[I]]=energy(Pepisode[sumep[I]]/timep[sumep[I]]*(60.0/interval));
 
-	EI30[snepisode[I]]=RE[snepisode[I]]*vI30[snepisode[I]];
-	EI15[snepisode[I]]=RE[snepisode[I]]*vI15[snepisode[I]];
-	EI10[snepisode[I]]=RE[snepisode[I]]*vI10[snepisode[I]];
-	 EI5[snepisode[I]]=RE[snepisode[I]]* vI5[snepisode[I]];
 
 # Uncomment the line below for testing:
-#print rain[I],snepisode[I],vI5[snepisode[I]], vI10[snepisode[I]], vI15[snepisode[I]], vI30[snepisode[I]],RE[snepisode[I]],EI30[snvent[I]] 
+#printf"%d\t%d\t%2.1f\t%2d\t%3.1f\t%3.1f\t%3.1f\t%3.1f\t%3.1f\t%3.1f\n",time[I],date[I],rain[I],sumep[I],vI5[sumep[I]],vI10[sumep[I]],vI15[sumep[I]],vI30[sumep[I]],RE[sumep[I]],EI30[snvent[I]]
 
+
+N = I + int(30/interval);
 
 #Stores the date and time in an array indexed by episodes
-	datepisode[snepisode[I]] = date[I];
-	timepisode[snepisode[I]] = time[I];
+	datepisode[sumep[I]] = date[N];
+	timepisode[sumep[I]] = time[N];
 
 # Uncomment the line below for testing:
-#print date[I],time[I],rain[I],snepisode[I],Pepisode[snepisode[I]],vI30[snepisode[I]],RE[snepisode[I]],EI30[snepisode[I]]; 
+#print date[I],time[I],rain[I],sumep[I],Pepisode[sumep[I]],vI30[sumep[I]],RE[sumep[I]],EI30[sumep[I]]; 
 
 
 # Save the maximum number of episodes
-	maxepisode=snepisode[I];
+	maxepisode=sumep[I];
 	}
+# End of the conditional loop  for the episode
 
 # Uncomment the line below for testing:
 #	print I5[I]*12,I10[I]*6,I15[I]*4,I30[I]*2
 }
 
+
+
+
+for(Istorm=1;Istorm < maxepisode; Istorm++)
+{
+#print maxepisode
+
+M = Istorm + 1;
+
+	for(K=timeindex[Istorm];K <= timeindex[M];K++)
+	{
+	Pepisode[Istorm] = Pepisode[Istorm] + rain[K];
+         
+        timet[Istorm]++;
+	if( rain[K] > 0) {timep[Istorm]++;}
+	}	
+	RE[Istorm]=energy(Pepisode[Istorm]/timep[Istorm]*(60.0/interval));
+
+# Uncomment the line below for testing:
+#	print timep[Istorm],Pepisode[Istorm],RE[Istorm]
+
+	EI30[Istorm]=RE[Istorm]*vI30[Istorm];
+	EI15[Istorm]=RE[Istorm]*vI15[Istorm];
+	EI10[Istorm]=RE[Istorm]*vI10[Istorm];
+	 EI5[Istorm]=RE[Istorm]* vI5[Istorm];
+}
 #=================================================================
 # Write output:
 # date, time, episode no., EI30 (MJ/ha mm/h)
@@ -195,7 +216,7 @@ for(Istorm=1;Istorm<=maxepisode;Istorm++)
 {
 # Uncomment the line below for testing:
 # print Istorm,datepisode[Istorm],timepisode[Istorm],EI30[Istorm]
-printf "%s\t%s\t%3d\t%4.1f\t%4.1f\t%4.1f\t%4.1f\t%4.3f\t%4.1f\t%4.1f\t%4.1f\t%4.1f\n",datepisode[Istorm],timepisode[Istorm],Istorm,vI5[Istorm],vI10[Istorm],vI15[Istorm],vI30[Istorm],RE[Istorm],EI5[Istorm],EI10[Istorm],EI15[Istorm],EI30[Istorm]
+printf "%s\t%s\t%3d\t%3.1f\t%4.1f\t%4.1f\t%3.1f\t%4.1f\t%4.1f\t%4.1f\t%4.3f\t%4.1f\t%4.1f\t%4.1f\t%4.1f\n",datepisode[Istorm],timepisode[Istorm],Istorm,Pepisode[Istorm],timet[Istorm]*interval/60,timep[Istorm]*interval/60,vI5[Istorm],vI10[Istorm],vI15[Istorm],vI30[Istorm],RE[Istorm],EI5[Istorm],EI10[Istorm],EI15[Istorm],EI30[Istorm]
 
 }
 
