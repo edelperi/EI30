@@ -41,9 +41,14 @@ rain[NR]=$3
 END{
 
 
-# Command line assignation of time interval 
+# Command line assignation of time interval  (in minutes)
 # interval = ARGV[1];
 interval = 5;
+
+ t5 = 60/interval;
+t10 = 30/interval;
+t15 = 15/interval;
+t30 = 10/interval;
 
 printf "#==========================================================================\n"
 printf "# Calculation of EI erosivity indexes from tipping buckett rainfall records\n"
@@ -70,7 +75,7 @@ for (I=2;I<=NR;I++)
 		sprec= sprec + rain[I+K]
 		}
 
-	if (sprec <= 1.3) # Wischmeier and Smith threshold, 1978
+	if (sprec <= 1.3) # Threshold for erosive rain > 1.3 mm (Wischmeier and Smith, 1978)
 		{	
 		episode[I]= 0.0;
 		}
@@ -147,14 +152,14 @@ time[snepisode[I]]++;
 	if(maxI5 < tmp5)   { maxI5=  tmp5; }
 
 	#Store the maximum intensiities in variables indexed by episodes
-	vI30[snepisode[I]]=maxI30*2;
-	vI15[snepisode[I]]=maxI15*3;
-	vI10[snepisode[I]]=maxI10*6;
-	vI5[snepisode[I]]=maxI5*12;
+	vI30[snepisode[I]]=maxI30*t30;
+	vI15[snepisode[I]]=maxI15*t15;
+	vI10[snepisode[I]]=maxI10*t10;
+	vI5[snepisode[I]]=maxI5*t5;
 
 #Calculates the rainfall energy in the episode (RE) by using the Brown and Foster equation (1987).
 
-	RE[snepisode[I]]=energy(Pepisode[snepisode[I]]/time[snepisode[I]]*12.0)* Pepisode[snepisode[I]];
+	RE[snepisode[I]]=energy(Pepisode[snepisode[I]]/time[snepisode[I]]*(60.0/interval))* Pepisode[snepisode[I]];
 
 	EI30[snepisode[I]]=RE[snepisode[I]]*vI30[snepisode[I]];
 	EI15[snepisode[I]]=RE[snepisode[I]]*vI15[snepisode[I]];
