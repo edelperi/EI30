@@ -1,9 +1,17 @@
-#!/urs/bin/awk
+#!/urs/bin/awk -f
 #
 #
 # This is a awk(*) script that calculates and displays the EI30 erosivity
 # index from rainfall gauge records.
 # The sampling interval must be specified at the source code 
+#
+# [usage]: ' awk -v interval=5 -f EI30.awk < test_filename.dat'
+#  
+# In this example use a raingauge with a sampling interval equals to 5 minutes
+# -v interval =4
+#
+# Is the sampling interval in the data set was 10 min 
+# [usage]: ' awk -v interval=10 -f EI30.awk < test_filename.dat'
 #
 # ================================================
 # José Eugenio López Periago
@@ -32,6 +40,11 @@
 
 BEGIN{FS " ";RS "\n"}
 {
+
+# for (i = 0; i < ARGC; i++)
+#        printf "\tARGV[%d] = %s\n", i, ARGV[i]
+#interval = ARGV[1];
+
 date[NR]=$1
 time[NR]=$2
 rain[NR]=$3
@@ -42,7 +55,6 @@ END{
 
 # Command line assignation of time interval  (in minutes)
 # interval = ARGV[1];
-interval = 5;
 
  t5 = 60/interval;
 t10 = 30/interval;
@@ -55,8 +67,8 @@ printf "#=======================================================================
 printf "# Calculation of EI erosivity indexes from tipping buckett rainfall records\n"
 printf "# Using a time lag of %d min\n",interval
 printf "===========================================================================\n"
-printf "Date\tTime\t\tEvt_no.\tP\tTime\tAvg_I\tI5\tI10\tI15\tI30\tEnergy\tEI5\tEI10\tEI15\tEI30\n"
-printf "Date\tTime\t\t\t(mm)\t(h)\t(mm/h)\t\t\t\t\t(MJ/ha)\t\t\t\tMJ/ha mm/h\n"
+printf "Date\t\tTime\tEvt_no.\tP\tTime\tAvg_I\tI5\tI10\tI15\tI30\tEnergy\tEI5\tEI10\tEI15\tEI30\n"
+printf "dd/mm/yyyy\thh:mm\t\t(mm)\t(h)\t(mm/h)\t\t\t\t\t(MJ/ha)\t\t\t\tMJ/ha mm/h\n"
 
 nepisode=0;
 
