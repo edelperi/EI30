@@ -7,13 +7,14 @@
  vie oct 10 19:51:55 CEST 2014
  ================================================
  
- usage: "awk -f EI30.awk < EI30.dat" 
- 
- where: EI30.dat is a dummy rainfall data file that
- can be used for testing
-
  This is a awk(*) script that calculates and displays the EI30 erosivity
  index from rainfall gauge records.
+ The sampling interval must be specified at the source code 
+
+ [usage]: ' awk -v interval=5 -f EI30.awk < test_filename.dat'
+  
+ In this example use a raingauge with a sampling interval equals to 5 minutes
+ -v interval =4
 
  EI calculations, a break between storms is
  defined as 6 h or more with less than 1.3 mm of
