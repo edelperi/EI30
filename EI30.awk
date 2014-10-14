@@ -3,8 +3,7 @@
 #
 # This is a awk(*) script that calculates and displays the EI30 erosivity
 # index from rainfall gauge records.
-# The current version is valid for records with a sampling interval of
-#  5 min
+# The sampling interval must be specified at the source code 
 #
 # ================================================
 # José Eugenio López Periago
@@ -56,7 +55,8 @@ printf "#=======================================================================
 printf "# Calculation of EI erosivity indexes from tipping buckett rainfall records\n"
 printf "# Using a time lag of %d min\n",interval
 printf "===========================================================================\n"
-printf "Date\tTime\t\tEvt_no.\tP(mm)\tTime(h)\tAvg_I(mm/h)\tI5\tI10\tI15\tI30\tEnergy\tEI5\tEI10\tEI15\tEI30\n"
+printf "Date\tTime\t\tEvt_no.\tP\tTime\tAvg_I\tI5\tI10\tI15\tI30\tEnergy\tEI5\tEI10\tEI15\tEI30\n"
+printf "Date\tTime\t\t\t(mm)\t(h)\t(mm/h)\t\t\t\t\t(MJ/ha)\t\t\t\tMJ/ha mm/h\n"
 
 nepisode=0;
 
@@ -112,10 +112,10 @@ M =  I-1;
 			nepisode++;
 			}
 
-
-# Save the   number of the episode
+# Save the  number of the episode
          sumep[I]=nepisode;
 # Save the  time indexes in the episodes
+#
          timeindex[sumep[I]]=I;
 
 
@@ -152,7 +152,6 @@ M =  I-1;
 	vI10[sumep[I]]=maxI10*t10;
 	vI5[sumep[I]]=maxI5*t5;
 
-#Calculates the rainfall energy in the episode (RE) by using the Brown and Foster equation (1987).
 
 #	RE[sumep[I]]=energy(Pepisode[sumep[I]]/time[sumep[I]]*(60.0/interval))* Pepisode[sumep[I]];
 #	RE[sumep[I]]=energy(Pepisode[sumep[I]]/timep[sumep[I]]*(60.0/interval));
@@ -184,37 +183,32 @@ N = I + int(30/interval);
 
 for(Istorm=1;Istorm < maxepisode; Istorm++)
 {
-	for(K=timeindex[Istorm];K <= timeindex[M];K++)
-	{
+K = timeindex[Istorm];
+	while(rain[K]==0)
+        {
+                timeindex[Istorm]++;
          
 	}
-
 }
 
 
 for(Istorm=1;Istorm < maxepisode; Istorm++)
 {
-#print maxepisode
-
 M = Istorm + 1;
 
 	for(K=timeindex[Istorm];K <= timeindex[M];K++)
 	{
+#Compute the accumulate rainfall in the episode
 	Pepisode[Istorm] = Pepisode[Istorm] + rain[K];
-         
         timet[Istorm]++;
+#Compute the rainfall time in the episode
 	if( rain[K] > 0) {timep[Istorm]++;}
 	}	
-	RE[Istorm]=energy(Pepisode[Istorm]/timep[Istorm]*(60.0/interval));
 
 # Uncomment the line below for testing:
 #	print timep[Istorm],Pepisode[Istorm],RE[Istorm]
 
 }
-#=================================================================
-# Write output:
-# date, time, episode no., EI30 (MJ/ha mm/h)
-#=================================================================
 
 for(Istorm=1;Istorm <= maxepisode-1;Istorm++)
 {
@@ -223,6 +217,7 @@ raintime=timep[Istorm]*interval/60.0;
 
 #Compute the average rainfall intensity in the interval
 Avg_I= Pepisode[Istorm]/raintime;
+#Calculate the rainfall energy in the episode (RE) by using the Brown and Foster equation (1987).
 
 	RE[Istorm]=energy(Avg_I);
 
@@ -233,6 +228,9 @@ Avg_I= Pepisode[Istorm]/raintime;
 
 # Uncomment the line below for testing:
 # print Istorm,datepisode[Istorm],timepisode[Istorm],EI30[Istorm]
+#=================================================================
+# Write output:
+#=================================================================
 printf "%s\t%s\t%3d\t%3.1f\t%4.1f\t%4.1f\t%3.1f\t%4.1f\t%4.1f\t%4.1f\t%4.3f\t%4.1f\t%4.1f\t%4.1f\t%4.1f\n",datepisode[Istorm],timepisode[Istorm],Istorm,Pepisode[Istorm],raintime,Avg_I,vI5[Istorm],vI10[Istorm],vI15[Istorm],vI30[Istorm],RE[Istorm],EI5[Istorm],EI10[Istorm],EI15[Istorm],EI30[Istorm]
 
 }
