@@ -14,29 +14,28 @@
  [usage]: ' awk -v interval=5 -f EI30.awk < test_filename.dat'
   
  In this example use a raingauge with a sampling interval equals to 5 minutes
- -v interval =4
+ -v interval =5
 
- EI calculations, a break between storms is
+ For the EI calculations, a break between storms is
  defined as 6 h or more with less than 1.3 mm of
  precipitation. Rains less than 1.3 mm, and separated
  from other storms by 6 or more hours, are moitted
  as insignificant unless the maximum 15 min intensity
  exceeds 24 mm h^-1 (Wischmeier and Smith, 1978)
 
+ This scrip separate storms with this criterion. Then,
+ the rainfall energy  is calculated for each time interval as:
 
- The rainfall energy  is calculated for each time interval as:
- where rain_intensity is the rainfall intensity during 
- the time interval (mm hr -1) (Brown and Foster, 1987)
- returns the energy  in  E(MJ/ha)
 
-#-----------------------------------------------------------------
 function energy(rain_intensity)
         {
         res = 0.29 * (1 - 0.72 * exp(-0.05 * rain_intensity))
         return(res)
         }
-#-----------------------------------------------------------------
 
+ where rain_intensity is the average rainfall intensity during 
+ the time interval espressed as (mm hr -1) (Brown and Foster, 1987).
+ The functions returns the energy  in  E(MJ/ha)
 
 
 
