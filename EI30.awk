@@ -22,8 +22,8 @@
 #
 #
 # EI calculations, a break between storms is
-# defined as 6 h or more with less than 1.3 mm of
-# precipitation. Rains less than 13 mm, and separated
+# defined as 6 h or more with less than 12.7 mm of
+# precipitation. Rains less than 12.7 mm, and separated
 # from other storms by 6 or more hours, are moitted
 # as insignificant unless the maximum 15 min intensity
 # exceeds 24 mm h -1 (Wischmeier and Smith, 1978)
@@ -82,8 +82,8 @@ for (I=2;I<=NR;I++)
 #               Check for a rainfall episode
 #===================================================
 # EI calculations, a break between storms is
-# defined as 6 h or more with less than 1.3 mm of
-# precipitation. Rains less than 13 mm, and separated
+# defined as 6 h or more with less than 12.7 mm of
+# precipitation. Rains less than 12.7 mm, and separated
 # from other storms by 6 or more hours, are moitted
 # as insignificant unless the maximum 15 min intensity
 # exceeds 24 mm h -1 (Wischmeier and Smith, 1978)
@@ -92,7 +92,7 @@ for (I=2;I<=NR;I++)
 		sprec= sprec + rain[I+K]
 		}
 
-	if (sprec <= 1.3) # Threshold for erosive rain > 1.3 mm (Wischmeier and Smith, 1978)
+	if (sprec <= 12.7) # Threshold for erosive rain > 1.3 mm (Wischmeier and Smith, 1978)
 		{	
 		episode[I]= 0;
 		}
